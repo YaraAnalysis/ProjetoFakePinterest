@@ -1,18 +1,33 @@
 <!DOCTYPE html>
 <html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <title>
-        {% block titulo %}
-        FakePinterest
-        {% endblock %}
-    </title>
-</head>
-{% block body %}
-<body>
-<h1>FakePinterest - Meu primeiro site Flask!</h1>
+    <head>
+        <meta charset="UTF-8">
+        <title>{% block titulo %}
+            FakePinterest
+            {% endblock %}</title>
+    </head>
 
-<h2>Agora vamos continuar nosso site.</h2>
-</body>
+{% block body %}
+    <body>
+    <h1>FakePinterest - Meu primeiro site Flask!</h1>
+
+    <h2>Agora vamos continuar nosso site.</h2>
+
+    {% block formulario %}
+    <form method="POST">
+    {{ form.csrf_token }}
+
+        {{ form.email.label() }}
+        {{ form.email() }}
+
+        {{ form.senha.label() }}
+        {{ form.senha() }}
+
+        {{ form.botao_confirmacao() }}
+
+    </form>
+    {% endblock %}
+
+    </body>
 {% endblock %}
 </html>
