@@ -13,7 +13,7 @@ def homepage():
         usuario = Usuario.query.filter_by(email=form_login.email.data).first()
         if usuario and bcrypt.check_password_hash(usuario.senha, form_login.senha.data):
             login_user(usuario)
-        return redirect(url_for("perfil", usuario=usuario.username))
+            return redirect(url_for("perfil", id_usuario=usuario.id))
     return render_template("homepage.html", form=form_login)  # form antes do =, é o nome que a variável vai ter no html
 
 
@@ -24,17 +24,22 @@ def criar_conta():
         senha = bcrypt.generate_password_hash(form_criarconta.senha.data)
         usuario = Usuario(username=form_criarconta.username.data,
                           email=form_criarconta.email.data, senha=senha)
-        database.session.add(usuario) #adicionar usuário
-        database.session.commit()  #commitar as infos no banco
-        login_user(usuario, remember=True)  #faz o login após o cadastro
-        return redirect(url_for("perfil", usuario=usuario.username))
+        database.session.add(usuario)           #adicionar usuário
+        database.session.commit()               #commitar as infos no banco
+        login_user(usuario, remember=True)      #faz o login após o cadastro
+        return redirect(url_for("perfil", id_usuario=usuario.id))
     return render_template("criarconta.html", form=form_criarconta)
 
 
-@app.route("/perfil/<usuario>")  # essa chave <>, sinaliza que é uma variável.
+@app.route("/perfil/<id_usuario>")         #essa chave <>, sinaliza que é uma variável.
 @login_required
-def perfil(usuario):
-    return render_template("perfil.html", usuario=usuario)
+def perfil(id_usuario):
+    if int(id_usuario) == int(current_user.id):
+        # o usuario tá vendo o perfil dele
+        return render_template("perfil.html", usuario=current_user)
+    else:
+        usuario = Usuario.query.get(int(id_usuario))
+        return render_template("perfil.html", usuario=usuario)
 
 
 @app.route("/logout")
