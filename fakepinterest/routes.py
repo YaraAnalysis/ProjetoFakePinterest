@@ -2,8 +2,10 @@
 from flask import render_template, url_for, redirect
 from fakepinterest import app, database, bcrypt
 from flask_login import login_required, login_user, logout_user, current_user
-from fakepinterest.forms import FormLogin, FormCriarConta
+from fakepinterest.forms import FormLogin, FormCriarConta, FormFoto
 from fakepinterest.models import Usuario, Foto
+import os
+from werkzeug.utils import secure_filename
 
 
 @app.route("/", methods=["GET", "POST"])
@@ -31,15 +33,29 @@ def criar_conta():
     return render_template("criarconta.html", form=form_criarconta)
 
 
-@app.route("/perfil/<id_usuario>")         #essa chave <>, sinaliza que é uma variável.
+@app.route("/perfil/<id_usuario>", methods=["GET", "POST"])         #essa chave <>, sinaliza que é uma variável.
 @login_required
 def perfil(id_usuario):
     if int(id_usuario) == int(current_user.id):
         # o usuario tá vendo o perfil dele
-        return render_template("perfil.html", usuario=current_user)
+        form_foto = FormFoto()
+        if form_foto.validate_on_submit():
+            arquivo = form_foto.foto.data
+            nome_seguro = secure_filename(arquivo.filename)
+            #salvar o arquivo na pasta fotos_posts
+            caminho = os.path.join(os.path.abspath(os.path.dirname(__file__)),
+                                   app.config["UPLOAD_FOLDER"],
+                                   nome_seguro)   #caminho_projeto + app.config["UPLOAD_FOLDER"] + nome_seguro
+            # os.path.abspath é para pegar o caminho absoluto do arquivonos parêntses e os.path.dirname(__file__) --> quer dizer o próprio arquivo: routes.py
+            arquivo.save(caminho)
+            #registrar o arquivo na pasta fotos_posts
+            foto = Foto(imagem=nome_seguro, id_usuario=current_user.id)
+            database.session.add(foto)
+            database.session.commit()
+        return render_template("perfil.html", usuario=current_user, form=form_foto)
     else:
         usuario = Usuario.query.get(int(id_usuario))
-        return render_template("perfil.html", usuario=usuario)
+        return render_template("perfil.html", usuario=usuario, form=None)
 
 
 @app.route("/logout")
