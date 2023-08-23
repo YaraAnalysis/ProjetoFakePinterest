@@ -8,21 +8,41 @@ Perfil - {{ usuario }}
 <body>
 {% include "navbar.html" %}
 
-<h1>Perfil do usuário: {{ usuario.username }}</h1>
+<div class="container">
 
 {% if form %}
-<form method="POST" enctype="multipart/form-data">
-    {{ form.csrf_token }}
 
-    {{ form.foto() }}
-    {{ form.botao_confirmacao() }}
-</form>
+      <form class="bloco-add-img" method="POST" enctype="multipart/form-data">
+          {{ form.csrf_token }}
+        <h2>{{ usuario.username }} - Enviar foto</h2>
+
+          <div class="bloco-arquivo">
+            <label for="foto" class="botao-arquivo">
+                Escolher arquivo
+                {{ form.foto(class="input.arquivo", id="foto") }}
+            </label>
+
+            <spam id="imagem-arquivo" class=""></spam>
+          </div>
+
+            {{ form.botao_confirmacao(class="botao-login") }}
+      </form>
+{% else %}
+    <div class="bloco-add-img">
+        <h2>{{ usuario.username }} - Ver perfil</h2>
+    </div>
 {% endif %}
+</div>
 
-
+<div class="conteudo">
 {% for foto in usuario.fotos %}
-<img src="{{ url_for('static', filename='fotos_posts/{}'.format(foto.imagem)) }}">
+        <div class="bloco-imagem">
+          <img src="{{ url_for('static', filename='fotos_posts/{}'.format(foto.imagem)) }}" />
+        </div>
 {% endfor %}
+</div>
+
 
 </body>
 {% endblock %}
+
