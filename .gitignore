@@ -1,8 +1,8 @@
 .env
-
 __pycache__\
 instance
 FakePinterest Layout
+teste.py
 *.pyc
 
 # Byte-compiled / optimized / DLL files

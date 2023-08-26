@@ -14,9 +14,11 @@ Perfil - {{ usuario }}
 
       <form class="bloco-add-img" method="POST" enctype="multipart/form-data">
           {{ form.csrf_token }}
-        <h2>{{ usuario.username }} - Enviar foto</h2>
+        <h2>Meu perfil {{ usuario.username }}</h2>
 
-          <div class="bloco-arquivo">
+        <h2></h2>
+
+          <div class="bloco-arquivo"> Enviar foto
             <label for="foto" class="botao-arquivo">
                 Escolher arquivo
                 {{ form.foto(class="input-arquivo", id="foto") }}
@@ -29,7 +31,7 @@ Perfil - {{ usuario }}
       </form>
 {% else %}
     <div class="bloco-add-img">
-        <h2>{{ usuario.username }} - Ver perfil</h2>
+        <h2>Perfil de {{ usuario.username }}</h2>
     </div>
 {% endif %}
 </div>
