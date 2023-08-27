@@ -166,3 +166,4 @@ cython_debug/
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
 .idea/
 instance/comunidade.db
+fakepinterest/static/fotos_posts/Corrida6.jpg
